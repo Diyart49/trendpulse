@@ -152,4 +152,4 @@ with gr.Blocks(title="TrendPulse", css=CSS, theme=gr.themes.Base(
     </div>""")
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(show_api=False)
