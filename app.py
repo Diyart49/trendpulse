@@ -249,7 +249,7 @@ with gr.Blocks(
                         "Summarise latest on Fed rate cuts"
                     </div>""")
                 with gr.Column(scale=4, elem_id="chat-col"):
-                    gr.ChatInterface(fn=agent_chat, title="", retry_btn=None, undo_btn=None)
+                    gr.ChatInterface(fn=agent_chat, title="")
 
     gr.HTML("""
     <div style="text-align:center;padding:16px 0 8px;color:#CBD5E1;
