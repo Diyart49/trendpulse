@@ -11,3 +11,4 @@ pinned: false
 
 # 📡 TrendPulse
 News Intelligence & Narrative Tracking Agent — powered by LangChain, HuggingFace, ChromaDB, and Groq.
+blah blahg bah 
