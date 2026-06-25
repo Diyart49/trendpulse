@@ -108,14 +108,13 @@ def analyze_topic(topic, days_back, recent):
         format_recent(updated), updated,
     )
 
-# Robust JS snippet targeting the core body object directly
 THEME_JS = """
 () => {
     const body = document.body;
     const isDark = body.classList.toggle('tp-dark');
     const buttons = document.querySelectorAll('.theme-toggle-btn button');
     buttons.forEach(btn => {
-        btn.textContent = isDark ? '✨ Light mode' : '🌙 Dark mode';
+        btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
     });
 }
 """
@@ -125,21 +124,21 @@ body {
     --bg:#F8FAFC; --surf:#FFFFFF; --surf2:#F1F5F9; --bdr:#E2E8F0;
     --txt:#0F172A; --mid:#374151; --muted:#64748B; --faint:#94A3B8;
     --acc:#2563EB; --acc-bg:#EFF6FF; --acc-bdr:#BFDBFE;
-    --sh:rgba(0,0,0,0.04);
+    --sh:rgba(0,0,0,0.03);
 }
 body.tp-dark {
     --bg:#0D1117; --surf:#161B22; --surf2:#21262D; --bdr:#30363D;
     --txt:#E6EDF3; --mid:#C9D1D9; --muted:#8B949E; --faint:#484F58;
-    --acc:#58A6FF; --acc-bg:#0D2137; --acc-bdr:#1F6FEB;
-    --sh:rgba(0,0,0,0.3);
+    --acc:#3B82F6; --acc-bg:#1e293b; --acc-bdr:#384454;
+    --sh:rgba(0,0,0,0.2);
 }
 
-html, body, .gradio-container, .gradio-container > .main, .tabitem, .tab-content, .tabs {
+html, body, .gradio-container, .gradio-container > .main, .tabitem, .tab-content {
     background-color: var(--bg) !important;
     color: var(--txt) !important;
 }
 
-/* Remove default Gradio Card visual wrappers */
+/* Force Reset on Form Blocks to avoid harsh block nested boxes */
 .block, .form, .gap, .padded, .gr-group, .gr-box {
     background: transparent !important;
     border: none !important;
@@ -154,19 +153,27 @@ html, body, .gradio-container, .gradio-container > .main, .tabitem, .tab-content
     margin: 0 !important;
 }
 
+/* Smooth out text input boxes */
 input[type=text], textarea {
     background: var(--surf) !important;
     color: var(--txt) !important;
-    border: 1.5px solid var(--bdr) !important;
+    border: 1px solid var(--bdr) !important;
     border-radius: 8px !important;
+    padding: 12px 14px !important;
     font-size: 14px !important;
 }
 
-/* Clean tab selection links */
-.tab-nav {
+/* FIX: Ensure Tab Text is completely clear and visible */
+.tabs {
     background: var(--surf) !important;
     border-bottom: 1px solid var(--bdr) !important;
-    padding: 0 24px !important;
+}
+.tab-nav {
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 4px 24px 0 !important;
+    display: flex !important;
+    gap: 8px !important;
 }
 .tab-nav button {
     font-size: 13px !important;
@@ -175,13 +182,19 @@ input[type=text], textarea {
     background: transparent !important;
     border: none !important;
     border-bottom: 2px solid transparent !important;
-    padding: 14px 20px !important;
+    padding: 12px 16px !important;
+    transition: all 0.15s ease;
+}
+.tab-nav button:hover {
+    color: var(--txt) !important;
 }
 .tab-nav button.selected {
     color: var(--acc) !important;
     border-bottom: 2px solid var(--acc) !important;
+    background: transparent !important;
 }
 
+/* Clean Dashboard Layout Containers */
 #tp-sidebar {
     position: sticky !important;
     top: 0 !important;
@@ -202,7 +215,6 @@ input[type=text], textarea {
     margin-bottom: 6px !important;
     width: 100% !important;
     justify-content: flex-start !important;
-    transition: all 0.1s ease;
 }
 #tp-sidebar button:hover {
     background: var(--acc-bg) !important;
@@ -221,27 +233,37 @@ input[type=text], textarea {
     border: 1px solid var(--bdr) !important;
     border-radius: 12px !important;
     padding: 24px !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 24px !important;
 }
 
-#tp-search {
+/* Clean Search Dashboard Form Panel */
+#tp-search-container {
     background: var(--surf) !important;
     border: 1px solid var(--bdr) !important;
     border-radius: 12px !important;
     padding: 24px !important;
     box-shadow: 0 4px 12px var(--sh) !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 24px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
 }
 
+/* Primary Execution Button styling */
 #tp-btn button {
     background: var(--acc) !important;
     border: none !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
+    font-size: 14px !important;
     color: #FFFFFF !important;
-    height: 42px !important;
+    height: 44px !important;
     width: 100% !important;
-    margin-top: 12px !important;
+    cursor: pointer !important;
+    transition: filter 0.15s ease;
+}
+#tp-btn button:hover {
+    filter: brightness(1.08);
 }
 
 #tp-results {
@@ -252,20 +274,29 @@ input[type=text], textarea {
     margin-top: 12px !important;
 }
 
+/* FIX: Absolute Minimalist, Small Pinned Dark Mode Button */
 .theme-toggle-fixed {
-    position: fixed !important;
-    top: 10px !important;
-    right: 20px !important;
+    position: absolute !important;
+    top: 12px !important;
+    right: 24px !important;
     z-index: 99999 !important;
 }
 .theme-toggle-fixed button {
-    background: var(--surf) !important;
+    background: var(--surf2) !important;
     border: 1px solid var(--bdr) !important;
     color: var(--mid) !important;
-    border-radius: 20px !important;
+    border-radius: 6px !important;
     font-size: 12px !important;
-    padding: 4px 14px !important;
+    font-weight: 500 !important;
+    padding: 4px 10px !important;
+    min-height: unset !important;
+    height: 28px !important;
     width: auto !important;
+    min-width: unset !important;
+    cursor: pointer !important;
+}
+.theme-toggle-fixed button:hover {
+    background: var(--bdr) !important;
 }
 
 footer { display: none !important; }
@@ -310,18 +341,16 @@ CHAT_SIDEBAR = """
 with gr.Blocks(title="TrendPulse", css=CSS, theme=gr.themes.Base()) as demo:
     recent_state = gr.State([])
 
-    # Theme toggler globally pinned at top-right
+    # Small, floating minimalist theme trigger button
     with gr.Row(elem_classes="theme-toggle-fixed"):
-        dark_btn = gr.Button("🌙 Dark mode", size="sm", elem_classes="theme-toggle-btn")
+        dark_btn = gr.Button("🌙 Dark", size="sm", elem_classes="theme-toggle-btn")
 
     with gr.Tabs():
         with gr.Tab("Analyse Topic"):
             with gr.Row(equal_height=False):
-                # SIDEBAR
                 with gr.Column(scale=1, min_width=240, elem_id="tp-sidebar"):
                     gr.HTML(SIDEBAR_HEADER)
                     
-                    # Create example shortcuts mapping
                     example_btns = []
                     for ex in EXAMPLES:
                         example_btns.append(gr.Button(ex, size="sm"))
@@ -329,20 +358,22 @@ with gr.Blocks(title="TrendPulse", css=CSS, theme=gr.themes.Base()) as demo:
                     gr.HTML('<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--faint);margin:24px 0 10px;">Recent Searches</div>')
                     recent_html = gr.HTML('<p style="font-size:12px;color:var(--faint);font-style:italic;margin:0;">No recent searches yet.</p>')
 
-                # MAIN LAB AREA
                 with gr.Column(scale=4, elem_id="tp-main"):
                     gr.HTML(HERO_HTML)
-                    with gr.Group(elem_id="tp-search"):
+                    
+                    # Cleaned and smoothed outer box layout container
+                    with gr.Column(elem_id="tp-search-container"):
                         topic_input = gr.Textbox(
                             label="Target Topic Definition",
-                            placeholder="Type industry keyword or market event..."
+                            placeholder="Type industry keyword or market event...",
+                            show_label=True
                         )
                         days_slider = gr.Slider(
                             minimum=1, maximum=30, value=7,
                             step=1, label="Historical Windows (Days Back)"
                         )
                         with gr.Row(elem_id="tp-btn"):
-                            analyse_btn = gr.Button("Execute Analysis", variant="primary", size="lg")
+                            analyse_btn = gr.Button("Execute Analysis", variant="primary")
 
                     summary_md = gr.Markdown()
 
@@ -363,7 +394,6 @@ with gr.Blocks(title="TrendPulse", css=CSS, theme=gr.themes.Base()) as demo:
                 with gr.Column(scale=4, elem_id="tp-chat"):
                     gr.ChatInterface(fn=agent_chat, title="")
 
-    # WIRE EVENTS CLEANLY
     for btn in example_btns:
         btn.click(fn=lambda x: x, inputs=[btn], outputs=[topic_input])
 
